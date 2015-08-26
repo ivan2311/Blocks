@@ -1,35 +1,17 @@
 package net.apps.blocks;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
-
+import android.widget.GridView;
 import java.util.List;
 
-/**
- * Created by Korisnik on 8/25/2015.
- */
 public class MainPresenterImpl implements MainPresenter {
 
-    private int[] drawables = {
-            R.drawable.square_blue,
-            R.drawable.square_green,
-            R.drawable.square_blue,
-            R.drawable.square_yellow,
-            R.drawable.square_red,
-            R.drawable.square_red,
-            R.drawable.square_yellow,
-            R.drawable.square_green,
-            R.drawable.square_red,
-            R.drawable.square_blue,
-            R.drawable.square_red,
-            R.drawable.square_yellow,
-            R.drawable.square_green,
-            R.drawable.square_yellow,
-            R.drawable.square_green,
-            R.drawable.square_blue
-    };
+    private static final float VISIBILITY_COMPLETE = 1f;
+    private static final float VISIBILITY_HALF = 0.5f;
+    private static final float VISIBILITY_NONE = 0f;
 
     private MainView mainView;
 
@@ -37,8 +19,6 @@ public class MainPresenterImpl implements MainPresenter {
 
     private int pos1;
     private int pos2;
-    private ImageView ivElement1;
-    private ImageView ivElement2;
 
     private boolean secondClick;
 
@@ -48,16 +28,17 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        matrix = MatrixGenerator.randomMatrix(4, 4);
-        resetState();
+        init();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        ImageView ivElement = (ImageView)view.findViewById(R.id.ivElement);
+        if (matrix.isEmptyElementAtPosition(position)) {
+            return;
+        }
 
-        //ivElement.setAlpha(0.4f);
+        view.setAlpha(VISIBILITY_HALF);
 
         if (secondClick) {
             pos2 = position;
@@ -65,7 +46,6 @@ public class MainPresenterImpl implements MainPresenter {
             resetState();
         } else {
             pos1 = position;
-            ivElement1 = ivElement;
             secondClick = true;
         }
     }
@@ -76,21 +56,56 @@ public class MainPresenterImpl implements MainPresenter {
     }
 
     private void checkConnection() {
-
         List<String> directions = matrix.getPath(pos1, pos2);
-
         StringBuilder sb = new StringBuilder();
-        for (String dir : directions) {
-            sb.append(dir);
-            sb.append(" ");
+        if (directions.isEmpty()) {
+            sb.append("ILLEGAL!!!");
+        } else {
+            for (String dir : directions) {
+                sb.append(dir);
+                sb.append(" ");
+            }
+            removeElements();
         }
-
         mainView.showMessage(sb.toString());
     }
 
+    private void removeElements() {
+        removeElement(pos1);
+        removeElement(pos2);
+    }
+
+    private void removeElement(int pos) {
+        GridView gvMatrix = mainView.getGvMatrix();
+
+        View gvElement = gvMatrix.getChildAt(pos);
+
+        matrix.setEmptyElementAtPosition(pos, true);
+
+        ObjectAnimator anim = ObjectAnimator.ofFloat(gvElement, "alpha", VISIBILITY_HALF, VISIBILITY_NONE);
+        anim.setDuration(500);
+        anim.start();
+    }
+
     private void resetState() {
+        GridView gvMatrix = mainView.getGvMatrix();
+        if (pos1>=0) {
+            View gvElement = gvMatrix.getChildAt(pos1);
+            gvElement.setAlpha(VISIBILITY_COMPLETE);
+        }
+        if (pos2>=0) {
+            View gvElement = gvMatrix.getChildAt(pos2);
+            gvElement.setAlpha(VISIBILITY_COMPLETE);
+        }
         secondClick = false;
         pos1 = -1;
         pos2 = -1;
+    }
+
+    private void init() {
+        secondClick = false;
+        pos1 = -1;
+        pos2 = -1;
+        matrix = MatrixGenerator.randomMatrix(4, 4);
     }
 }

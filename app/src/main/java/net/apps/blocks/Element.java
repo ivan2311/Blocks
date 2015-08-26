@@ -1,8 +1,5 @@
 package net.apps.blocks;
 
-/**
- * Created by Korisnik on 8/24/2015.
- */
 public class Element {
 
     private int resource;
@@ -23,6 +20,10 @@ public class Element {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
     }
 
     @Override

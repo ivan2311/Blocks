@@ -1,8 +1,5 @@
 package net.apps.blocks;
 
-/**
- * Created by Korisnik on 8/24/2015.
- */
 public class MatrixGenerator {
 
     private static final int[] drawables = {

@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-/**
- * Created by Korisnik on 8/24/2015.
- */
 public class ElementAdapter extends BaseAdapter {
 
     private Context context;
@@ -33,7 +30,7 @@ public class ElementAdapter extends BaseAdapter {
         if (convertView == null) {
             vElement = inflater.inflate(R.layout.element, null);
             ImageView ivElement = (ImageView)vElement.findViewById(R.id.ivElement);
-            ivElement.setImageResource(matrix.getElementByPosition(position).getResource());
+            ivElement.setImageResource(matrix.getElementAtPosition(position).getResource());
         } else {
             vElement = convertView;
         }
@@ -48,6 +45,6 @@ public class ElementAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return matrix.getElementByPosition(position);
+        return matrix.getElementAtPosition(position);
     }
 }

@@ -5,9 +5,6 @@ import net.apps.blocks.Element;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Korisnik on 8/24/2015.
- */
 public class Matrix {
 
     private enum Direction {
@@ -43,7 +40,7 @@ public class Matrix {
         return elements[row+1][col+1];
     }
 
-    public Element getElementByPosition(int position) {
+    public Element getElementAtPosition(int position) {
         int row = position / cols;
         int col = position % cols;
         return elements[row+1][col+1];
@@ -74,6 +71,17 @@ public class Matrix {
         return position % cols;
     }
 
+    public boolean isFinished() {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (!elements[row][col].isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public List<String> getPath(int pos1, int pos2) {
         int x1 = pos1 / cols;
         int y1 = pos1 % cols;
@@ -88,7 +96,6 @@ public class Matrix {
         List<String> path = new ArrayList<>();
 
         if (!elements[x1+1][y1+1].equals(elements[x2+1][y2+1])) {
-            path.add("ILLEGAL");
             return path;
         }
 
@@ -98,8 +105,6 @@ public class Matrix {
             for (Direction dir : directions) {
                 path.add(dir.name());
             }
-        } else {
-            path.add("ILLEGAL!!!");
         }
 
         return path;
@@ -128,20 +133,15 @@ public class Matrix {
         if (lastDir != Direction.DOWN) {
             newDir = Direction.UP;
             directions.add(newDir);
+            int turn = 1;
             if (lastDir == null || lastDir == Direction.UP) {
-                List<Direction> newDirections = getPath(x1-1, y1, x2, y2, directions, newDir, countTurn);
-                if (newDirections == null) {
-                    directions.remove(directions.size()-1);
-                } else {
-                    return newDirections;
-                }
+                turn = 0;
+            }
+            List<Direction> newDirections = getPath(x1-1, y1, x2, y2, directions, newDir, countTurn + turn);
+            if (newDirections == null) {
+                directions.remove(directions.size()-1);
             } else {
-                List<Direction> newDirections = getPath(x1-1, y1, x2, y2, directions, newDir, countTurn+1);
-                if (newDirections == null) {
-                    directions.remove(directions.size()-1);
-                } else {
-                    return newDirections;
-                }
+                return newDirections;
             }
         }
 
@@ -149,63 +149,59 @@ public class Matrix {
         if (lastDir != Direction.UP) {
             newDir = Direction.DOWN;
             directions.add(newDir);
+            int turn = 1;
             if (lastDir == null || lastDir == Direction.DOWN) {
-                List<Direction> newDirections = getPath(x1+1, y1, x2, y2, directions, newDir, countTurn);
-                if (newDirections == null) {
-                    directions.remove(directions.size()-1);
-                } else {
-                    return newDirections;
-                }
+                turn = 0;
+            }
+            List<Direction> newDirections = getPath(x1+1, y1, x2, y2, directions, newDir, countTurn + turn);
+            if (newDirections == null) {
+                directions.remove(directions.size()-1);
             } else {
-                List<Direction> newDirections = getPath(x1+1, y1, x2, y2, directions, newDir, countTurn+1);
-                if (newDirections == null) {
-                    directions.remove(directions.size()-1);
-                } else {
-                    return newDirections;
-                }
+                return newDirections;
             }
         }
         //check LEFT
         if (lastDir != Direction.RIGHT) {
             newDir = Direction.LEFT;
             directions.add(newDir);
+            int turn = 1;
             if (lastDir == null || lastDir == Direction.LEFT) {
-                List<Direction> newDirections = getPath(x1, y1-1, x2, y2, directions, newDir, countTurn);
-                if (newDirections == null) {
-                    directions.remove(directions.size()-1);
-                } else {
-                    return newDirections;
-                }
+                turn = 0;
+            }
+            List<Direction> newDirections = getPath(x1, y1-1, x2, y2, directions, newDir, countTurn + turn);
+            if (newDirections == null) {
+                directions.remove(directions.size()-1);
             } else {
-                List<Direction> newDirections = getPath(x1, y1-1, x2, y2, directions, newDir, countTurn+1);
-                if (newDirections == null) {
-                    directions.remove(directions.size()-1);
-                } else {
-                    return newDirections;
-                }
+                return newDirections;
             }
         }
         //check RIGHT
         if (lastDir != Direction.LEFT) {
             newDir = Direction.RIGHT;
             directions.add(newDir);
+            int turn = 1;
             if (lastDir == null || lastDir == Direction.RIGHT) {
-                List<Direction> newDirections = getPath(x1, y1+1, x2, y2, directions, newDir, countTurn);
-                if (newDirections == null) {
-                    directions.remove(directions.size()-1);
-                } else {
-                    return newDirections;
-                }
+                turn = 0;
+            }
+            List<Direction> newDirections = getPath(x1, y1+1, x2, y2, directions, newDir, countTurn + turn);
+            if (newDirections == null) {
+                directions.remove(directions.size()-1);
             } else {
-                List<Direction> newDirections = getPath(x1, y1+1, x2, y2, directions, newDir, countTurn+1);
-                if (newDirections == null) {
-                    directions.remove(directions.size()-1);
-                } else {
-                    return newDirections;
-                }
+                return newDirections;
             }
         }
         return null;
     }
+
+    public void setEmptyElementAtPosition(int position, boolean empty) {
+        Element element = getElementAtPosition(position);
+        element.setEmpty(empty);
+    }
+
+    public boolean isEmptyElementAtPosition(int position) {
+        Element element = getElementAtPosition(position);
+        return element.isEmpty();
+    }
+
 
 }

@@ -9,16 +9,19 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-
 public class MainActivity extends Activity implements MainView {
 
     private GridView gvMatrix;
     private MainPresenter presenter;
+    private Bundle savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.savedInstanceState = savedInstanceState;
+
         presenter = new MainPresenterImpl(this);
 
         presenter.onCreate(savedInstanceState);
@@ -60,6 +63,16 @@ public class MainActivity extends Activity implements MainView {
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public GridView getGvMatrix() {
+        return gvMatrix;
+    }
+
+    @Override
+    public void reset() {
+        this.onCreate(savedInstanceState);
     }
 }
