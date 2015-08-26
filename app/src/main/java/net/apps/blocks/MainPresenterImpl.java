@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+
 import java.util.List;
 
 public class MainPresenterImpl implements MainPresenter {
@@ -89,11 +90,11 @@ public class MainPresenterImpl implements MainPresenter {
 
     private void resetState() {
         GridView gvMatrix = mainView.getGvMatrix();
-        if (pos1>=0) {
+        if (pos1 >= 0) {
             View gvElement = gvMatrix.getChildAt(pos1);
             gvElement.setAlpha(VISIBILITY_COMPLETE);
         }
-        if (pos2>=0) {
+        if (pos2 >= 0) {
             View gvElement = gvMatrix.getChildAt(pos2);
             gvElement.setAlpha(VISIBILITY_COMPLETE);
         }
@@ -106,6 +107,6 @@ public class MainPresenterImpl implements MainPresenter {
         secondClick = false;
         pos1 = -1;
         pos2 = -1;
-        matrix = MatrixGenerator.randomMatrix(4, 4);
+        matrix = MatrixGenerator.firstStage();
     }
 }

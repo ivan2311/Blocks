@@ -29,7 +29,7 @@ public class ElementAdapter extends BaseAdapter {
 
         if (convertView == null) {
             vElement = inflater.inflate(R.layout.element, null);
-            ImageView ivElement = (ImageView)vElement.findViewById(R.id.ivElement);
+            ImageView ivElement = (ImageView) vElement.findViewById(R.id.ivElement);
             ivElement.setImageResource(matrix.getElementAtPosition(position).getResource());
         } else {
             vElement = convertView;

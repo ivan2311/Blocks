@@ -23,36 +23,36 @@ public class Matrix {
     }
 
     private void initElements() {
-        elements = new Element[rows+2][cols+2];
+        elements = new Element[rows + 2][cols + 2];
 
-        for (int row=0; row<rows+2; row++) {
+        for (int row = 0; row < rows + 2; row++) {
             elements[row][0] = new Element();
-            elements[row][cols+1] = new Element();
+            elements[row][cols + 1] = new Element();
         }
 
-        for (int col=1; col<cols+1; col++) {
+        for (int col = 1; col < cols + 1; col++) {
             elements[0][col] = new Element();
-            elements[rows+1][col] = new Element();
+            elements[rows + 1][col] = new Element();
         }
     }
 
     public Element getElement(int row, int col) {
-        return elements[row+1][col+1];
+        return elements[row + 1][col + 1];
     }
 
     public Element getElementAtPosition(int position) {
         int row = position / cols;
         int col = position % cols;
-        return elements[row+1][col+1];
+        return elements[row + 1][col + 1];
     }
 
     public void setElement(int row, int col, Element element) {
-        elements[row+1][col+1] = element;
+        elements[row + 1][col + 1] = element;
 
     }
 
     public int getCount() {
-        return rows*cols;
+        return rows * cols;
     }
 
     public int getNumCols() {
@@ -88,14 +88,14 @@ public class Matrix {
         int x2 = pos2 / cols;
         int y2 = pos2 % cols;
 
-        return getPath(x1,y1,x2,y2);
+        return getPath(x1, y1, x2, y2);
     }
 
     public List<String> getPath(int x1, int y1, int x2, int y2) {
 
         List<String> path = new ArrayList<>();
 
-        if (!elements[x1+1][y1+1].equals(elements[x2+1][y2+1])) {
+        if (!elements[x1 + 1][y1 + 1].equals(elements[x2 + 1][y2 + 1])) {
             return path;
         }
 
@@ -113,7 +113,7 @@ public class Matrix {
 
     private List<Direction> getPath(int x1, int y1, int x2, int y2, List<Direction> directions, Direction lastDir, int countTurn) {
         if (lastDir != null) {
-            if (x1<-1 || x1 > rows || y1<-1 || y1 > cols) {
+            if (x1 < -1 || x1 > rows || y1 < -1 || y1 > cols) {
                 return null;
             }
 
@@ -123,7 +123,7 @@ public class Matrix {
                 return directions;
             }
 
-            if (!elements[x1+1][y1+1].isEmpty()) return null;
+            if (!elements[x1 + 1][y1 + 1].isEmpty()) return null;
 
         }
 
@@ -137,9 +137,9 @@ public class Matrix {
             if (lastDir == null || lastDir == Direction.UP) {
                 turn = 0;
             }
-            List<Direction> newDirections = getPath(x1-1, y1, x2, y2, directions, newDir, countTurn + turn);
+            List<Direction> newDirections = getPath(x1 - 1, y1, x2, y2, directions, newDir, countTurn + turn);
             if (newDirections == null) {
-                directions.remove(directions.size()-1);
+                directions.remove(directions.size() - 1);
             } else {
                 return newDirections;
             }
@@ -153,9 +153,9 @@ public class Matrix {
             if (lastDir == null || lastDir == Direction.DOWN) {
                 turn = 0;
             }
-            List<Direction> newDirections = getPath(x1+1, y1, x2, y2, directions, newDir, countTurn + turn);
+            List<Direction> newDirections = getPath(x1 + 1, y1, x2, y2, directions, newDir, countTurn + turn);
             if (newDirections == null) {
-                directions.remove(directions.size()-1);
+                directions.remove(directions.size() - 1);
             } else {
                 return newDirections;
             }
@@ -168,9 +168,9 @@ public class Matrix {
             if (lastDir == null || lastDir == Direction.LEFT) {
                 turn = 0;
             }
-            List<Direction> newDirections = getPath(x1, y1-1, x2, y2, directions, newDir, countTurn + turn);
+            List<Direction> newDirections = getPath(x1, y1 - 1, x2, y2, directions, newDir, countTurn + turn);
             if (newDirections == null) {
-                directions.remove(directions.size()-1);
+                directions.remove(directions.size() - 1);
             } else {
                 return newDirections;
             }
@@ -183,9 +183,9 @@ public class Matrix {
             if (lastDir == null || lastDir == Direction.RIGHT) {
                 turn = 0;
             }
-            List<Direction> newDirections = getPath(x1, y1+1, x2, y2, directions, newDir, countTurn + turn);
+            List<Direction> newDirections = getPath(x1, y1 + 1, x2, y2, directions, newDir, countTurn + turn);
             if (newDirections == null) {
-                directions.remove(directions.size()-1);
+                directions.remove(directions.size() - 1);
             } else {
                 return newDirections;
             }
