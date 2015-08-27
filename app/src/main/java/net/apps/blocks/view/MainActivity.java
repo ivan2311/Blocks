@@ -1,4 +1,4 @@
-package net.apps.blocks;
+package net.apps.blocks.view;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,18 +9,20 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import net.apps.blocks.model.matrix.Matrix;
+import net.apps.blocks.R;
+import net.apps.blocks.presenter.MainPresenter;
+import net.apps.blocks.presenter.MainPresenterImpl;
+
 public class MainActivity extends Activity implements MainView {
 
     private GridView gvMatrix;
     private MainPresenter presenter;
-    private Bundle savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        this.savedInstanceState = savedInstanceState;
 
         presenter = new MainPresenterImpl(this);
 
@@ -72,7 +74,11 @@ public class MainActivity extends Activity implements MainView {
     }
 
     @Override
-    public void reset() {
-        this.onCreate(savedInstanceState);
+    public void updateGvMatrix() {
+        Matrix matrix = presenter.getMatrix();
+        ElementAdapter elementAdapter = (ElementAdapter)gvMatrix.getAdapter();
+        elementAdapter.setMatrix(matrix);
+        gvMatrix.invalidateViews();
+        gvMatrix.setAdapter(elementAdapter);
     }
 }

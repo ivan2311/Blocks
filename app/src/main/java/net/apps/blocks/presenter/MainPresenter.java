@@ -1,8 +1,10 @@
-package net.apps.blocks;
+package net.apps.blocks.presenter;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+
+import net.apps.blocks.model.matrix.Matrix;
 
 public interface MainPresenter {
 

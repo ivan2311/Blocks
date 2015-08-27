@@ -1,4 +1,4 @@
-package net.apps.blocks;
+package net.apps.blocks.view;
 
 import android.widget.GridView;
 
@@ -8,5 +8,5 @@ public interface MainView {
 
     GridView getGvMatrix();
 
-    void reset();
+    void updateGvMatrix();
 }

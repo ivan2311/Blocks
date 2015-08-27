@@ -1,10 +1,18 @@
-package net.apps.blocks;
+package net.apps.blocks.presenter;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+
+import net.apps.blocks.model.Element;
+import net.apps.blocks.model.stage.Stage;
+import net.apps.blocks.view.MainView;
+import net.apps.blocks.model.matrix.Matrix;
+import net.apps.blocks.model.stage.StageProvider;
 
 import java.util.List;
 
@@ -23,19 +31,46 @@ public class MainPresenterImpl implements MainPresenter {
 
     private boolean secondClick;
 
+    private int numOfStage;
+
     public MainPresenterImpl(MainView mainView) {
         this.mainView = mainView;
+        numOfStage = 0;
+        secondClick = false;
+        pos1 = -1;
+        pos2 = -1;
+        setMatrix();
+    }
+
+    public int getNumOfStage() {
+        return numOfStage;
+    }
+
+    public void setNumOfStage(int numOfStage) {
+        if (this.numOfStage == numOfStage) return;
+        this.numOfStage = numOfStage;
+        setMatrix();
+    }
+
+    public boolean nextStage() {
+        numOfStage++;
+        if (StageProvider.hasStage(numOfStage)) {
+            setMatrix();
+            mainView.updateGvMatrix();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        init();
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        if (matrix.isEmptyElementAtPosition(position)) {
+        if (matrix.getStatusElementAtPosition(position) != Element.STATUS_FULL) {
             return;
         }
 
@@ -58,17 +93,11 @@ public class MainPresenterImpl implements MainPresenter {
 
     private void checkConnection() {
         List<String> directions = matrix.getPath(pos1, pos2);
-        StringBuilder sb = new StringBuilder();
         if (directions.isEmpty()) {
-            sb.append("ILLEGAL!!!");
+            mainView.showMessage("ILLEGAL!!!");
         } else {
-            for (String dir : directions) {
-                sb.append(dir);
-                sb.append(" ");
-            }
             removeElements();
         }
-        mainView.showMessage(sb.toString());
     }
 
     private void removeElements() {
@@ -76,16 +105,37 @@ public class MainPresenterImpl implements MainPresenter {
         removeElement(pos2);
     }
 
-    private void removeElement(int pos) {
+    private void removeElement(final int pos) {
         GridView gvMatrix = mainView.getGvMatrix();
 
         View gvElement = gvMatrix.getChildAt(pos);
 
-        matrix.setEmptyElementAtPosition(pos, true);
+
 
         ObjectAnimator anim = ObjectAnimator.ofFloat(gvElement, "alpha", VISIBILITY_HALF, VISIBILITY_NONE);
         anim.setDuration(500);
+
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                matrix.setStatusElementAtPosition(pos, Element.STATUS_EMPTY);
+                if (matrix.isFinished()) {
+                    if (!nextStage()) {
+                        mainView.showMessage("FINISHED!!!");
+                    }
+                }
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                matrix.setStatusElementAtPosition(pos, Element.STATUS_PENDING);
+            }
+        });
+
         anim.start();
+
     }
 
     private void resetState() {
@@ -103,10 +153,10 @@ public class MainPresenterImpl implements MainPresenter {
         pos2 = -1;
     }
 
-    private void init() {
-        secondClick = false;
-        pos1 = -1;
-        pos2 = -1;
-        matrix = MatrixGenerator.firstStage();
+    private void setMatrix() {
+        Stage stage = StageProvider.getStage(numOfStage);
+        if (stage != null) {
+            matrix = stage.getMatrix();
+        }
     }
 }

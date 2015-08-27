@@ -1,6 +1,6 @@
-package net.apps.blocks;
+package net.apps.blocks.model.matrix;
 
-import net.apps.blocks.Element;
+import net.apps.blocks.model.Element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,9 +72,9 @@ public class Matrix {
     }
 
     public boolean isFinished() {
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                if (!elements[row][col].isEmpty()) {
+        for (int row = 1; row < rows + 1; row++) {
+            for (int col = 1; col < cols + 1; col++) {
+                if (elements[row][col].getStatus() != Element.STATUS_EMPTY) {
                     return false;
                 }
             }
@@ -123,7 +123,7 @@ public class Matrix {
                 return directions;
             }
 
-            if (!elements[x1 + 1][y1 + 1].isEmpty()) return null;
+            if (elements[x1 + 1][y1 + 1].getStatus() != Element.STATUS_EMPTY) return null;
 
         }
 
@@ -193,14 +193,14 @@ public class Matrix {
         return null;
     }
 
-    public void setEmptyElementAtPosition(int position, boolean empty) {
+    public void setStatusElementAtPosition(int position, int status) {
         Element element = getElementAtPosition(position);
-        element.setEmpty(empty);
+        element.setStatus(status);
     }
 
-    public boolean isEmptyElementAtPosition(int position) {
+    public int getStatusElementAtPosition(int position) {
         Element element = getElementAtPosition(position);
-        return element.isEmpty();
+        return element.getStatus();
     }
 
 

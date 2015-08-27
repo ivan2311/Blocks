@@ -1,4 +1,4 @@
-package net.apps.blocks;
+package net.apps.blocks.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import net.apps.blocks.R;
+import net.apps.blocks.model.matrix.Matrix;
+
 public class ElementAdapter extends BaseAdapter {
 
     private Context context;
@@ -14,6 +17,10 @@ public class ElementAdapter extends BaseAdapter {
 
     public ElementAdapter(Context context, Matrix matrix) {
         this.context = context;
+        this.matrix = matrix;
+    }
+
+    public void setMatrix(Matrix matrix) {
         this.matrix = matrix;
     }
 

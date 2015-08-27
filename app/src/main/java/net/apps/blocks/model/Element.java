@@ -1,30 +1,37 @@
-package net.apps.blocks;
+package net.apps.blocks.model;
 
 public class Element {
 
+    public static final int STATUS_EMPTY = 0;
+    public static final int STATUS_PENDING = 1;
+    public static final int STATUS_FULL = 2;
+
     private int resource;
-    private boolean empty;
+
+    private int status;
 
     public Element() {
-        this.empty = true;
+        this.status = STATUS_EMPTY;
     }
 
     public Element(int resource) {
         this.resource = resource;
-        this.empty = false;
+        this.status = STATUS_FULL;
     }
 
     public int getResource() {
         return resource;
     }
 
-    public boolean isEmpty() {
-        return empty;
+    public int getStatus() {
+        return status;
     }
 
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
+    public void setStatus(int status) {
+        this.status = status;
     }
+
+
 
     @Override
     public boolean equals(Object o) {
