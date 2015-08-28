@@ -16,6 +16,8 @@ public abstract class MatrixGenerator {
 
     public abstract int getNumOfCols();
 
+    public abstract int[] getTypes();
+
     public Matrix generateMatrix() {
         int[] drawablesArray = getDrawablesArray(getDrawables(), getNumOfPairs());
         int numOfRows = getNumOfRows();
@@ -52,5 +54,4 @@ public abstract class MatrixGenerator {
 
         return drawablesArray;
     }
-
 }

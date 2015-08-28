@@ -2,6 +2,7 @@ package net.apps.blocks.presenter;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.View;
@@ -30,6 +31,7 @@ public class MainPresenterImpl implements MainPresenter {
     private int pos2;
 
     private boolean secondClick;
+    private boolean illegalConnect;
 
     private int numOfStage;
 
@@ -37,6 +39,7 @@ public class MainPresenterImpl implements MainPresenter {
         this.mainView = mainView;
         numOfStage = 0;
         secondClick = false;
+        illegalConnect = false;
         pos1 = -1;
         pos2 = -1;
         setMatrix();
@@ -64,7 +67,6 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
     }
 
     @Override
@@ -78,7 +80,7 @@ public class MainPresenterImpl implements MainPresenter {
 
         if (secondClick) {
             pos2 = position;
-            checkConnection();
+            checkConnection(illegalConnect);
             resetState();
         } else {
             pos1 = position;
@@ -91,8 +93,8 @@ public class MainPresenterImpl implements MainPresenter {
         return matrix;
     }
 
-    private void checkConnection() {
-        List<String> directions = matrix.getPath(pos1, pos2);
+    private void checkConnection(boolean illegalConnect) {
+        List<String> directions = matrix.getPath(pos1, pos2, illegalConnect);
         if (directions.isEmpty()) {
             mainView.showMessage("ILLEGAL!!!");
         } else {
@@ -109,8 +111,6 @@ public class MainPresenterImpl implements MainPresenter {
         GridView gvMatrix = mainView.getGvMatrix();
 
         View gvElement = gvMatrix.getChildAt(pos);
-
-
 
         ObjectAnimator anim = ObjectAnimator.ofFloat(gvElement, "alpha", VISIBILITY_HALF, VISIBILITY_NONE);
         anim.setDuration(500);
@@ -151,6 +151,7 @@ public class MainPresenterImpl implements MainPresenter {
         secondClick = false;
         pos1 = -1;
         pos2 = -1;
+        illegalConnect = false;
     }
 
     private void setMatrix() {
@@ -158,5 +159,43 @@ public class MainPresenterImpl implements MainPresenter {
         if (stage != null) {
             matrix = stage.getMatrix();
         }
+    }
+
+
+    @Override
+    public void onHintClick() {
+        int count = matrix.getCount();
+        for (int pos1 = 0; pos1 < count; pos1++) {
+            int pos2 = matrix.getPair(pos1);
+            if (pos2 >= 0) {
+                animateHint(pos1);
+                animateHint(pos2);
+                return;
+            }
+
+        }
+        mainView.showMessage("No legal connection!");
+
+    }
+
+    private void animateHint(int pos) {
+        AnimatorSet set = new AnimatorSet();
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(mainView.getGvElement(pos), "alpha", VISIBILITY_COMPLETE, VISIBILITY_HALF);
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(mainView.getGvElement(pos), "alpha", VISIBILITY_HALF, VISIBILITY_COMPLETE);
+        set.play(fadeIn).after(1000).after(fadeOut);
+        set.start();
+    }
+
+    @Override
+    public void onRemoveClick() {
+        List<Integer> positions = matrix.getElementPositionsByRandomType();
+        for (int pos : positions) {
+            removeElement(pos);
+        }
+    }
+
+    @Override
+    public void onConnectClick() {
+        illegalConnect = true;
     }
 }

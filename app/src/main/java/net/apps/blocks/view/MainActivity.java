@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -18,6 +19,10 @@ public class MainActivity extends Activity implements MainView {
 
     private GridView gvMatrix;
     private MainPresenter presenter;
+
+    private Button btnHint;
+    private Button btnRemove;
+    private Button btnConnect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,32 @@ public class MainActivity extends Activity implements MainView {
                 presenter.onItemClick(parent, view, position, id);
             }
         });
+
+        btnHint = (Button) findViewById(R.id.btn_hint);
+        btnRemove = (Button) findViewById(R.id.btn_remove);
+        btnConnect = (Button) findViewById(R.id.btn_connect);
+
+        btnHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onHintClick();
+            }
+        });
+
+        btnRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onRemoveClick();
+            }
+        });
+
+        btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onConnectClick();
+            }
+        });
+
     }
 
     @Override
@@ -80,5 +111,10 @@ public class MainActivity extends Activity implements MainView {
         elementAdapter.setMatrix(matrix);
         gvMatrix.invalidateViews();
         gvMatrix.setAdapter(elementAdapter);
+    }
+
+    @Override
+    public View getGvElement(int position) {
+        return gvMatrix.getChildAt(position);
     }
 }

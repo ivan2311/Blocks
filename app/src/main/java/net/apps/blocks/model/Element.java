@@ -7,6 +7,7 @@ public class Element {
     public static final int STATUS_FULL = 2;
 
     private int resource;
+    private int type;
 
     private int status;
 
@@ -16,6 +17,7 @@ public class Element {
 
     public Element(int resource) {
         this.resource = resource;
+        this.type = resource;
         this.status = STATUS_FULL;
     }
 
@@ -31,7 +33,9 @@ public class Element {
         this.status = status;
     }
 
-
+    public int getType() {
+        return type;
+    }
 
     @Override
     public boolean equals(Object o) {

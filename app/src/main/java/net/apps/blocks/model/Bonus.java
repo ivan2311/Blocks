@@ -1,4 +1,7 @@
 package net.apps.blocks.model;
 
-public class Bonus {
+public interface Bonus {
+
+    void doAction();
+
 }

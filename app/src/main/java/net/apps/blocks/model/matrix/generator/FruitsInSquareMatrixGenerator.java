@@ -34,4 +34,9 @@ public class FruitsInSquareMatrixGenerator extends MatrixGenerator {
     public int getNumOfCols() {
         return NUM_OF_COLS;
     }
+
+    @Override
+    public int[] getTypes() {
+        return DRAWABLES;
+    }
 }

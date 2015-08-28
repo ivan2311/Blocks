@@ -7,15 +7,15 @@ import net.apps.blocks.model.matrix.generator.SquaresInSquareMatrixGenerator;
 
 import java.util.List;
 
-public class FirstStage extends Stage {
+public class DroppingStage extends Stage {
 
     private static final MatrixGenerator DEFAULT_GENERATOR = new SquaresInSquareMatrixGenerator();
 
-    public FirstStage() {
+    public DroppingStage() {
         super(DEFAULT_GENERATOR);
     }
 
-    public FirstStage(MatrixGenerator generator) {
+    public DroppingStage(MatrixGenerator generator) {
         super(generator);
     }
 

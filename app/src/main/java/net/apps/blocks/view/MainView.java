@@ -1,5 +1,6 @@
 package net.apps.blocks.view;
 
+import android.view.View;
 import android.widget.GridView;
 
 public interface MainView {
@@ -9,4 +10,7 @@ public interface MainView {
     GridView getGvMatrix();
 
     void updateGvMatrix();
+
+    View getGvElement(int position);
+
 }

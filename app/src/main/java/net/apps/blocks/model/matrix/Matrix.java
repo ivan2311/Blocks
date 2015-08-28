@@ -4,6 +4,7 @@ import net.apps.blocks.model.Element;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Matrix {
 
@@ -82,24 +83,24 @@ public class Matrix {
         return true;
     }
 
-    public List<String> getPath(int pos1, int pos2) {
-        int x1 = pos1 / cols;
-        int y1 = pos1 % cols;
-        int x2 = pos2 / cols;
-        int y2 = pos2 % cols;
+    public List<String> getPath(int pos1, int pos2, boolean illegalConnect) {
+        int x1 = pos1 / cols + 1;
+        int y1 = pos1 % cols + 1;
+        int x2 = pos2 / cols + 1;
+        int y2 = pos2 % cols + 1;
 
-        return getPath(x1, y1, x2, y2);
+        return getPath(x1, y1, x2, y2, illegalConnect);
     }
 
-    public List<String> getPath(int x1, int y1, int x2, int y2) {
+    public List<String> getPath(int x1, int y1, int x2, int y2, boolean illegalConnect) {
 
         List<String> path = new ArrayList<>();
 
-        if (!elements[x1 + 1][y1 + 1].equals(elements[x2 + 1][y2 + 1])) {
+        if (!elements[x1][y1].equals(elements[x2][y2])) {
             return path;
         }
 
-        List<Direction> directions = getPath(x1, y1, x2, y2, new ArrayList<Direction>(), null, 0);
+        List<Direction> directions = getPath(x1, y1, x2, y2, new ArrayList<Direction>(), null, 0, illegalConnect);
 
         if (directions != null) {
             for (Direction dir : directions) {
@@ -111,9 +112,9 @@ public class Matrix {
     }
 
 
-    private List<Direction> getPath(int x1, int y1, int x2, int y2, List<Direction> directions, Direction lastDir, int countTurn) {
+    private List<Direction> getPath(int x1, int y1, int x2, int y2, List<Direction> directions, Direction lastDir, int countTurn, boolean illegalConnect) {
         if (lastDir != null) {
-            if (x1 < -1 || x1 > rows || y1 < -1 || y1 > cols) {
+            if (x1 < 0 || x1 > rows || y1 < 0 || y1 > cols) {
                 return null;
             }
 
@@ -123,7 +124,9 @@ public class Matrix {
                 return directions;
             }
 
-            if (elements[x1 + 1][y1 + 1].getStatus() != Element.STATUS_EMPTY) return null;
+            if (!illegalConnect && elements[x1][y1].getStatus() != Element.STATUS_EMPTY) {
+                return null;
+            }
 
         }
 
@@ -137,7 +140,7 @@ public class Matrix {
             if (lastDir == null || lastDir == Direction.UP) {
                 turn = 0;
             }
-            List<Direction> newDirections = getPath(x1 - 1, y1, x2, y2, directions, newDir, countTurn + turn);
+            List<Direction> newDirections = getPath(x1 - 1, y1, x2, y2, directions, newDir, countTurn + turn, illegalConnect);
             if (newDirections == null) {
                 directions.remove(directions.size() - 1);
             } else {
@@ -153,7 +156,7 @@ public class Matrix {
             if (lastDir == null || lastDir == Direction.DOWN) {
                 turn = 0;
             }
-            List<Direction> newDirections = getPath(x1 + 1, y1, x2, y2, directions, newDir, countTurn + turn);
+            List<Direction> newDirections = getPath(x1 + 1, y1, x2, y2, directions, newDir, countTurn + turn, illegalConnect);
             if (newDirections == null) {
                 directions.remove(directions.size() - 1);
             } else {
@@ -168,7 +171,7 @@ public class Matrix {
             if (lastDir == null || lastDir == Direction.LEFT) {
                 turn = 0;
             }
-            List<Direction> newDirections = getPath(x1, y1 - 1, x2, y2, directions, newDir, countTurn + turn);
+            List<Direction> newDirections = getPath(x1, y1 - 1, x2, y2, directions, newDir, countTurn + turn, illegalConnect);
             if (newDirections == null) {
                 directions.remove(directions.size() - 1);
             } else {
@@ -183,7 +186,7 @@ public class Matrix {
             if (lastDir == null || lastDir == Direction.RIGHT) {
                 turn = 0;
             }
-            List<Direction> newDirections = getPath(x1, y1 + 1, x2, y2, directions, newDir, countTurn + turn);
+            List<Direction> newDirections = getPath(x1, y1 + 1, x2, y2, directions, newDir, countTurn + turn, illegalConnect);
             if (newDirections == null) {
                 directions.remove(directions.size() - 1);
             } else {
@@ -193,6 +196,27 @@ public class Matrix {
         return null;
     }
 
+    public int getPair(int pos1) {
+
+        if (getStatusElementAtPosition(pos1) == Element.STATUS_EMPTY) {
+            return -1;
+        }
+
+        int count = getCount();
+
+        for (int pos2 = 0; pos2 < count; pos2++) {
+            if (pos1 != pos2 && getStatusElementAtPosition(pos2) == Element.STATUS_FULL) {
+                List<String> path = getPath(pos1, pos2, false);
+                if (!path.isEmpty()) {
+                    return pos2;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+
     public void setStatusElementAtPosition(int position, int status) {
         Element element = getElementAtPosition(position);
         element.setStatus(status);
@@ -201,6 +225,35 @@ public class Matrix {
     public int getStatusElementAtPosition(int position) {
         Element element = getElementAtPosition(position);
         return element.getStatus();
+    }
+
+    public List<Integer> getElementPositionsByType(int type) {
+        List<Integer> positions = new ArrayList<>();
+        int count = getCount();
+        for (int pos = 0; pos < count; pos++) {
+            Element element = getElementAtPosition(pos);
+            if (element.getType() == type && element.getStatus() == Element.STATUS_FULL) {
+                positions.add(pos);
+            }
+        }
+        return positions;
+    }
+
+    public List<Integer> getElementPositionsByRandomType() {
+        Element element = getRandomElement();
+        return getElementPositionsByType(element.getType());
+    }
+
+    private Element getRandomElement() {
+        Random rand = new Random();
+        int pos = rand.nextInt(getCount());
+        while (true) {
+            Element element = getElementAtPosition(pos);
+            if (element.getStatus() == Element.STATUS_FULL) {
+                return element;
+            }
+            pos = (pos + 1) % getCount();
+        }
     }
 
 

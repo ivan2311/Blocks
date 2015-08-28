@@ -1,6 +1,7 @@
 package net.apps.blocks.model.stage;
 
 import net.apps.blocks.model.Bonus;
+import net.apps.blocks.model.matrix.Matrix;
 import net.apps.blocks.model.matrix.generator.FruitsInSquareMatrixGenerator;
 import net.apps.blocks.model.matrix.generator.MatrixGenerator;
 
@@ -27,4 +28,5 @@ public class SecondStage extends Stage {
     public List<Bonus> getBonuses() {
         return null;
     }
+
 }

@@ -34,4 +34,9 @@ public class SquaresInSquareMatrixGenerator extends MatrixGenerator {
     public int getNumOfPairs() {
         return NUM_OF_PAIRS;
     }
+
+    @Override
+    public int[] getTypes() {
+        return DRAWABLES;
+    }
 }

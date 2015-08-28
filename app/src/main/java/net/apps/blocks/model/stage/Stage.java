@@ -26,4 +26,8 @@ public abstract class Stage {
 
     public abstract List<Bonus> getBonuses();
 
+    public int[] getTypes() {
+        return generator.getTypes();
+    }
+
 }

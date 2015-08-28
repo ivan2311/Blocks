@@ -14,4 +14,11 @@ public interface MainPresenter {
 
     Matrix getMatrix();
 
+
+
+    void onHintClick();
+    void onRemoveClick();
+    void onConnectClick();
+
+
 }

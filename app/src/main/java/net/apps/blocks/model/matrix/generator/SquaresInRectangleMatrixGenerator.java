@@ -35,4 +35,9 @@ public class SquaresInRectangleMatrixGenerator extends MatrixGenerator {
     public int getNumOfCols() {
         return NUM_OF_COLS;
     }
+
+    @Override
+    public int[] getTypes() {
+        return DRAWABLES;
+    }
 }
