@@ -14,6 +14,7 @@ import net.apps.blocks.model.stage.Stage;
 import net.apps.blocks.view.MainView;
 import net.apps.blocks.model.matrix.Matrix;
 import net.apps.blocks.model.stage.StageProvider;
+import net.apps.blocks.view.UIUpdater;
 
 import java.util.List;
 
@@ -35,7 +36,10 @@ public class MainPresenterImpl implements MainPresenter {
 
     private int numOfStage;
 
-    public MainPresenterImpl(MainView mainView) {
+
+    private UIUpdater uiUpdater;
+
+    public MainPresenterImpl(final MainView mainView) {
         this.mainView = mainView;
         numOfStage = 0;
         secondClick = false;
@@ -43,7 +47,32 @@ public class MainPresenterImpl implements MainPresenter {
         pos1 = -1;
         pos2 = -1;
         setMatrix();
+
+        uiUpdater = new UIUpdater(new Runnable() {
+            @Override
+            public void run() {
+                if (mainView.updateTimer()) {
+                    mainView.showMessage("GAME OVER");
+                    stopTimer();
+                    restartStage();
+                }
+            }
+        }, 50);
     }
+
+    private void startTimer() {
+        uiUpdater.startUpdates();
+    }
+
+    private void stopTimer() {
+        uiUpdater.stopUpdates();
+    }
+
+    private void resetTimer() {
+        mainView.resetTimer();
+    }
+
+
 
     public int getNumOfStage() {
         return numOfStage;
@@ -55,18 +84,27 @@ public class MainPresenterImpl implements MainPresenter {
         setMatrix();
     }
 
-    public boolean nextStage() {
+    public void nextStage() {
         numOfStage++;
-        if (StageProvider.hasStage(numOfStage)) {
+        if (!setMatrix()) {
+            numOfStage = 0;
             setMatrix();
-            mainView.updateGvMatrix();
-            return true;
         }
-        return false;
+        mainView.updateGvMatrix();
+        resetTimer();
+        startTimer();
+    }
+
+    private void restartStage() {
+        setMatrix();
+        mainView.updateGvMatrix();
+        resetTimer();
+        startTimer();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        startTimer();
     }
 
     @Override
@@ -121,9 +159,7 @@ public class MainPresenterImpl implements MainPresenter {
                 super.onAnimationEnd(animation);
                 matrix.setStatusElementAtPosition(pos, Element.STATUS_EMPTY);
                 if (matrix.isFinished()) {
-                    if (!nextStage()) {
-                        mainView.showMessage("FINISHED!!!");
-                    }
+                    nextStage();
                 }
             }
 
@@ -154,11 +190,13 @@ public class MainPresenterImpl implements MainPresenter {
         illegalConnect = false;
     }
 
-    private void setMatrix() {
+    private boolean setMatrix() {
         Stage stage = StageProvider.getStage(numOfStage);
         if (stage != null) {
             matrix = stage.getMatrix();
+            return true;
         }
+        return false;
     }
 
 

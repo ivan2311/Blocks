@@ -12,12 +12,9 @@ public class StageProvider {
 
     public static Stage getStage(int position) {
         if (stages.length > position) {
-            position = 0;
+            return stages[position];
         }
-        return stages[position];
+        return null;
     }
 
-    public static boolean hasStage(int position) {
-        return stages.length > position;
-    }
 }

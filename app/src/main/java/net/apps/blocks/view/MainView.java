@@ -13,4 +13,8 @@ public interface MainView {
 
     View getGvElement(int position);
 
+    boolean updateTimer();
+
+    void resetTimer();
+
 }

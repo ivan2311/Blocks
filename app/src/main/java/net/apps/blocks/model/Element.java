@@ -44,13 +44,13 @@ public class Element {
 
         Element element = (Element) o;
 
-        return getResource() == element.getResource();
+        return getType() == element.getType();
 
     }
 
     @Override
     public int hashCode() {
-        return getResource();
+        return getType();
     }
 
 }

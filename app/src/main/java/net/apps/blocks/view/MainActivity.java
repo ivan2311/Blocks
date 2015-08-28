@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import net.apps.blocks.model.matrix.Matrix;
@@ -18,11 +19,14 @@ import net.apps.blocks.presenter.MainPresenterImpl;
 public class MainActivity extends Activity implements MainView {
 
     private GridView gvMatrix;
+    private ProgressBar timer;
     private MainPresenter presenter;
 
     private Button btnHint;
     private Button btnRemove;
     private Button btnConnect;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,7 @@ public class MainActivity extends Activity implements MainView {
 
         presenter = new MainPresenterImpl(this);
 
-        presenter.onCreate(savedInstanceState);
+
 
         gvMatrix = (GridView) findViewById(R.id.gvMatrix);
 
@@ -44,6 +48,9 @@ public class MainActivity extends Activity implements MainView {
                 presenter.onItemClick(parent, view, position, id);
             }
         });
+
+        timer = (ProgressBar) findViewById(R.id.timer);
+
 
         btnHint = (Button) findViewById(R.id.btn_hint);
         btnRemove = (Button) findViewById(R.id.btn_remove);
@@ -69,6 +76,8 @@ public class MainActivity extends Activity implements MainView {
                 presenter.onConnectClick();
             }
         });
+
+        presenter.onCreate(savedInstanceState);
 
     }
 
@@ -116,5 +125,17 @@ public class MainActivity extends Activity implements MainView {
     @Override
     public View getGvElement(int position) {
         return gvMatrix.getChildAt(position);
+    }
+
+    @Override
+    public boolean updateTimer() {
+        int progress = timer.getProgress() + 1;
+        timer.setProgress(progress);
+        return timer.getMax() == progress;
+    }
+
+    @Override
+    public void resetTimer() {
+        timer.setProgress(0);
     }
 }
